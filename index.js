@@ -11,7 +11,7 @@ app.use(bodyParser.json());
 // Endpoint de login (vulnerável a SQL Injection)
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
-  const user = await User.findOne({ where: { username, password } });
+  const user = await User.findOne({ where: { username }, attributes: ['id', 'username', 'password'] });
   if (user) {
     res.json({ message: 'Login successful', user });
   } else {
@@ -21,8 +21,8 @@ app.post('/login', async (req, res) => {
 
 // Endpoint de listagem de usuários (expondo dados sensíveis)
 app.get('/users', async (req, res) => {
-  const users = await User.findAll({ attributes: ['id', 'username', 'password'] });
-  res.json(users);
+  const users = await User.findAll({ attributes: ['id', 'username'] });
+  res.json({ id: user.id, username: user.username }); 
 });
 
 // Endpoint de detalhe do usuário logado (expondo senha)
